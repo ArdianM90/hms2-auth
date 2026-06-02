@@ -42,7 +42,7 @@ public class AuthorizationServerConfig {
 
   @Bean
   public JWKSource<SecurityContext> jwkSource() {
-    //todo: pobieranie klucza RSA ze zmiennej środowiskowej
+    // todo: pobieranie klucza RSA ze zmiennej środowiskowej
     KeyPair keyPair = generateRsaKey();
 
     RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();

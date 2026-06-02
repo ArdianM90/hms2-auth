@@ -1,6 +1,6 @@
 package com.hms.auth.service;
 
-import static com.hms.auth.jooq.Tables.APP_USER;
+import static com.hms.auth.generated.jooq.Tables.APP_USER;
 
 import com.hms.auth.exception.UserNotFoundException;
 import com.hms.auth.model.LoginRequest;
