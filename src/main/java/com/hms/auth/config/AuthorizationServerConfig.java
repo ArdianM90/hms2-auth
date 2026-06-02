@@ -12,45 +12,56 @@ import java.security.interfaces.RSAPublicKey;
 import java.util.UUID;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
+import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
 
 @Configuration
 public class AuthorizationServerConfig {
 
-  // Klienci OAuth2 - na razie jeden testowy, docelowo w bazie danych
   @Bean
-  public RegisteredClientRepository registeredClientRepository() {
+  public RegisteredClientRepository registeredClientRepository(AuthClientProperties properties) {
     RegisteredClient client =
         RegisteredClient.withId(UUID.randomUUID().toString())
-            .clientId("hms-client")
-            .clientSecret("{noop}secret")
-            .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-            .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
+            .clientId(properties.id())
+            .clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
             .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
             .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-            .redirectUri("http://localhost:8080/callback")
-            .scope("openid")
+            .redirectUri(properties.redirectUri())
+            .scope("read")
+            .clientSettings(ClientSettings.builder().requireProofKey(true).build())
             .build();
     return new InMemoryRegisteredClientRepository(client);
   }
 
-  // Klucze do podpisywania tokenów JWT
   @Bean
   public JWKSource<SecurityContext> jwkSource() {
+    //todo: pobieranie klucza RSA ze zmiennej środowiskowej
     KeyPair keyPair = generateRsaKey();
+
     RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
     RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
+
     RSAKey rsaKey =
         new RSAKey.Builder(publicKey)
             .privateKey(privateKey)
             .keyID(UUID.randomUUID().toString())
             .build();
-    return new ImmutableJWKSet<>(new JWKSet(rsaKey));
+
+    JWKSet jwkSet = new JWKSet(rsaKey);
+
+    return new ImmutableJWKSet<>(jwkSet);
+  }
+
+  @Bean
+  public JwtDecoder jwtDecoder(JWKSource<SecurityContext> jwkSource) {
+    return OAuth2AuthorizationServerConfiguration.jwtDecoder(jwkSource);
   }
 
   @Bean
