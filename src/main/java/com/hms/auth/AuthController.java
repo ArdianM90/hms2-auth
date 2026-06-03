@@ -24,7 +24,6 @@ public class AuthController {
 
   @PostMapping("/login")
   public boolean login(@RequestBody LoginRequest request) {
-    System.out.println("LOGIN ENDPOINT HIT");
     return service.login(request);
   }
 }

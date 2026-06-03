@@ -3,7 +3,12 @@ package com.hms.auth.config;
 import static com.hms.auth.generated.jooq.Tables.APP_USER;
 
 import com.hms.auth.generated.jooq.tables.records.AppUserRecord;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.List;
 import org.jooq.DSLContext;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -19,10 +24,17 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+import org.springframework.security.web.savedrequest.SavedRequest;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+  @Value("${hms.web.url}")
+  private String hmsWebUrl;
 
   @Bean
   public PasswordEncoder passwordEncoder() {
@@ -35,12 +47,18 @@ public class SecurityConfig {
     OAuth2AuthorizationServerConfigurer authorizationServerConfigurer =
         new OAuth2AuthorizationServerConfigurer();
     http.securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
-        .with(authorizationServerConfigurer, Customizer.withDefaults())
-        .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
-        .formLogin(Customizer.withDefaults())
+        .with(
+            // http://localhost:8081/.well-known/openid-configuration
+            authorizationServerConfigurer, configurer -> configurer.oidc(Customizer.withDefaults()))
+        .authorizeHttpRequests(
+            auth ->
+                auth.requestMatchers("/.well-known/**").permitAll().anyRequest().authenticated())
         .csrf(AbstractHttpConfigurer::disable)
+        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
         .exceptionHandling(
-            ex -> ex.authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login")));
+            ex ->
+                ex.authenticationEntryPoint(
+                    new LoginUrlAuthenticationEntryPoint(hmsWebUrl + "/login")));
     return http.build();
   }
 
@@ -48,6 +66,7 @@ public class SecurityConfig {
   @Order(2)
   public SecurityFilterChain app(HttpSecurity http) throws Exception {
     http.csrf(AbstractHttpConfigurer::disable)
+        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
         .authorizeHttpRequests(
             auth ->
                 auth.requestMatchers(
@@ -60,7 +79,16 @@ public class SecurityConfig {
                     .permitAll()
                     .anyRequest()
                     .authenticated())
-        .formLogin(Customizer.withDefaults())
+        .formLogin(
+            form ->
+                form.loginProcessingUrl("/login")
+                    .successHandler(
+                        (request, response, authentication) ->
+                            handleLoginSuccess(request, response))
+                    .failureHandler(
+                        (request, response, exception) ->
+                            response.sendError(HttpServletResponse.SC_UNAUTHORIZED))
+                    .permitAll())
         .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
     return http.build();
   }
@@ -78,6 +106,33 @@ public class SecurityConfig {
           .password(user.getPasswordHash())
           .roles("USER")
           .build();
+    };
+  }
+
+  private void handleLoginSuccess(HttpServletRequest request, HttpServletResponse response)
+      throws IOException {
+    HttpSessionRequestCache requestCache = new HttpSessionRequestCache();
+    SavedRequest savedRequest = requestCache.getRequest(request, response);
+
+    System.out.println(
+        ">>> savedRequest: " + (savedRequest != null ? savedRequest.getRedirectUrl() : "NULL"));
+
+    if (savedRequest != null) {
+      response.sendRedirect(savedRequest.getRedirectUrl());
+    } else {
+      response.sendRedirect(hmsWebUrl);
+    }
+  }
+
+  private CorsConfigurationSource corsConfigurationSource() {
+    return request -> {
+      CorsConfiguration config = new CorsConfiguration();
+      config.setAllowedOriginPatterns(List.of(hmsWebUrl));
+      config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+      config.setAllowedHeaders(List.of("*"));
+      config.setAllowCredentials(true);
+      config.setExposedHeaders(List.of("Location"));
+      return config;
     };
   }
 }
