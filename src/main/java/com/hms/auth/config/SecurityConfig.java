@@ -73,9 +73,9 @@ public class SecurityConfig {
                         "/swagger-ui/**",
                         "/v3/api-docs/**",
                         "/auth/**",
-                        "/oauth2/**",
                         "/login",
-                        "/.well-known/**")
+                        "/.well-known/**",
+                        "/images/**")
                     .permitAll()
                     .anyRequest()
                     .authenticated())
@@ -113,6 +113,7 @@ public class SecurityConfig {
     HttpSessionRequestCache requestCache = new HttpSessionRequestCache();
     SavedRequest savedRequest = requestCache.getRequest(request, response);
 
+    // todo: zamiana na logger.debug()
     System.out.println(
         ">>> savedRequest: " + (savedRequest != null ? savedRequest.getRedirectUrl() : "NULL"));
 
