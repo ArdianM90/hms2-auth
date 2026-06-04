@@ -2,8 +2,6 @@ package com.hms.auth.service;
 
 import static com.hms.auth.generated.jooq.Tables.APP_USER;
 
-import com.hms.auth.exception.UserNotFoundException;
-import com.hms.auth.model.LoginRequest;
 import com.hms.auth.model.RegisterRequest;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -29,13 +27,5 @@ public class AuthService {
         .set(APP_USER.PASSWORD_HASH, encoder.encode(request.password()))
         .execute();
     return id;
-  }
-
-  public boolean login(LoginRequest request) {
-    var user = dsl.selectFrom(APP_USER).where(APP_USER.USERNAME.eq(request.username())).fetchOne();
-    if (user == null) {
-      throw new UserNotFoundException();
-    }
-    return encoder.matches(request.password(), user.getPasswordHash());
   }
 }

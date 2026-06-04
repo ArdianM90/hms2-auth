@@ -1,6 +1,5 @@
-package com.hms.auth;
+package com.hms.auth.controller;
 
-import com.hms.auth.model.LoginRequest;
 import com.hms.auth.model.RegisterRequest;
 import com.hms.auth.service.AuthService;
 import java.util.UUID;
@@ -20,10 +19,5 @@ public class AuthController {
   @PostMapping("/register")
   public UUID register(@RequestBody RegisterRequest request) {
     return service.register(request);
-  }
-
-  @PostMapping("/login")
-  public boolean login(@RequestBody LoginRequest request) {
-    return service.login(request);
   }
 }

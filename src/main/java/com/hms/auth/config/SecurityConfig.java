@@ -6,7 +6,7 @@ import com.hms.auth.generated.jooq.tables.records.AppUserRecord;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -26,15 +26,17 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
-import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
   @Value("${hms.web.url}")
   private String hmsWebUrl;
+
+  private final CorsConfigurationSource corsConfigurationSource;
 
   @Bean
   public PasswordEncoder passwordEncoder() {
@@ -54,25 +56,23 @@ public class SecurityConfig {
             auth ->
                 auth.requestMatchers("/.well-known/**").permitAll().anyRequest().authenticated())
         .csrf(AbstractHttpConfigurer::disable)
-        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        .cors(cors -> cors.configurationSource(corsConfigurationSource))
         .exceptionHandling(
-            ex ->
-                ex.authenticationEntryPoint(
-                    new LoginUrlAuthenticationEntryPoint(hmsWebUrl + "/login")));
+            ex -> ex.authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login")));
     return http.build();
   }
 
   @Bean
   @Order(2)
   public SecurityFilterChain app(HttpSecurity http) throws Exception {
-    http.csrf(AbstractHttpConfigurer::disable)
-        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+    http.csrf(csrf -> csrf.ignoringRequestMatchers("/login", "/auth/**"))
+        .cors(cors -> cors.configurationSource(corsConfigurationSource))
         .authorizeHttpRequests(
             auth ->
                 auth.requestMatchers(
                         "/swagger-ui/**",
                         "/v3/api-docs/**",
-                        "/auth/register",
+                        "/auth/**",
                         "/oauth2/**",
                         "/login",
                         "/.well-known/**")
@@ -81,13 +81,12 @@ public class SecurityConfig {
                     .authenticated())
         .formLogin(
             form ->
-                form.loginProcessingUrl("/login")
+                form.loginPage("/login")
+                    .loginProcessingUrl("/login")
                     .successHandler(
                         (request, response, authentication) ->
                             handleLoginSuccess(request, response))
-                    .failureHandler(
-                        (request, response, exception) ->
-                            response.sendError(HttpServletResponse.SC_UNAUTHORIZED))
+                    .failureUrl("/login?error")
                     .permitAll())
         .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
     return http.build();
@@ -122,17 +121,5 @@ public class SecurityConfig {
     } else {
       response.sendRedirect(hmsWebUrl);
     }
-  }
-
-  private CorsConfigurationSource corsConfigurationSource() {
-    return request -> {
-      CorsConfiguration config = new CorsConfiguration();
-      config.setAllowedOriginPatterns(List.of(hmsWebUrl));
-      config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-      config.setAllowedHeaders(List.of("*"));
-      config.setAllowCredentials(true);
-      config.setExposedHeaders(List.of("Location"));
-      return config;
-    };
   }
 }
