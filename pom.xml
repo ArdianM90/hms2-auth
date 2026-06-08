@@ -135,10 +135,12 @@
 
 				<configuration>
 					<java>
+						<excludes>
+							<exclude>src/main/java/com/hms/auth/generated/jooq/**</exclude>
+						</excludes>
 						<googleJavaFormat>
 							<version>1.22.0</version>
 						</googleJavaFormat>
-
 						<removeUnusedImports/>
 						<trimTrailingWhitespace/>
 						<endWithNewline/>
