@@ -120,7 +120,7 @@
 							<records>true</records>
 						</generate>
 						<target>
-							<packageName>com.hms.auth.generated.jooq</packageName>
+							<packageName>com.hms.generated.jooq</packageName>
 							<directory>src/main/java</directory>
 						</target>
 					</generator>
@@ -136,7 +136,7 @@
 				<configuration>
 					<java>
 						<excludes>
-							<exclude>src/main/java/com/hms/auth/generated/jooq/**</exclude>
+							<exclude>src/main/java/com/hms/generated/jooq/**</exclude>
 						</excludes>
 						<googleJavaFormat>
 							<version>1.22.0</version>
