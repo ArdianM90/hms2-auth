@@ -1,5 +1,7 @@
 package com.hms.auth.config;
 
+import com.hms.generated.jooq.Tables;
+import com.hms.generated.jooq.tables.records.AppUserRecord;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
@@ -10,17 +12,36 @@ import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.UUID;
+import org.jooq.DSLContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.security.oauth2.server.authorization.client.JdbcRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
+import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
+import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 
 @Configuration
 public class AuthorizationServerConfig {
+
+  @Bean
+  public OAuth2TokenCustomizer<JwtEncodingContext> tokenCustomizer(DSLContext dsl) {
+    return context -> {
+      if (!context.getTokenType().equals(OAuth2TokenType.ACCESS_TOKEN)) {
+        return;
+      }
+      String username = context.getPrincipal().getName();
+      AppUserRecord user =
+          dsl.selectFrom(Tables.APP_USER).where(Tables.APP_USER.USERNAME.eq(username)).fetchOne();
+      if (user != null) {
+        context.getClaims().claim("user_id", user.getUserId().toString());
+      }
+    };
+  }
 
   @Bean
   public RegisteredClientRepository registeredClientRepository(JdbcTemplate jdbcTemplate) {
