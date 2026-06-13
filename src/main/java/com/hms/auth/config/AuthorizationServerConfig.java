@@ -34,6 +34,9 @@ public class AuthorizationServerConfig {
       if (!context.getTokenType().equals(OAuth2TokenType.ACCESS_TOKEN)) {
         return;
       }
+
+      context.getClaims().claim("client_id", context.getRegisteredClient().getClientId());
+
       String username = context.getPrincipal().getName();
       AppUserRecord user =
           dsl.selectFrom(Tables.APP_USER).where(Tables.APP_USER.USERNAME.eq(username)).fetchOne();
