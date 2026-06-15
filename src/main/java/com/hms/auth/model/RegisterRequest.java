@@ -1,3 +1,3 @@
 package com.hms.auth.model;
 
-public record RegisterRequest(String username, String email, String password) {}
+public record RegisterRequest(String email, String firstName, String lastName, String password) {}

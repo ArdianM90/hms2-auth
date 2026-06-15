@@ -18,37 +18,41 @@ public class AppUser implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private UUID userId;
-    private String username;
     private String email;
     private String passwordHash;
     private Boolean isActive;
     private LocalDateTime createdAt;
+    private String firstName;
+    private String lastName;
 
     public AppUser() {}
 
     public AppUser(AppUser value) {
         this.userId = value.userId;
-        this.username = value.username;
         this.email = value.email;
         this.passwordHash = value.passwordHash;
         this.isActive = value.isActive;
         this.createdAt = value.createdAt;
+        this.firstName = value.firstName;
+        this.lastName = value.lastName;
     }
 
     public AppUser(
         UUID userId,
-        String username,
         String email,
         String passwordHash,
         Boolean isActive,
-        LocalDateTime createdAt
+        LocalDateTime createdAt,
+        String firstName,
+        String lastName
     ) {
         this.userId = userId;
-        this.username = username;
         this.email = email;
         this.passwordHash = passwordHash;
         this.isActive = isActive;
         this.createdAt = createdAt;
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
     /**
@@ -63,20 +67,6 @@ public class AppUser implements Serializable {
      */
     public void setUserId(UUID userId) {
         this.userId = userId;
-    }
-
-    /**
-     * Getter for <code>auth.app_user.username</code>.
-     */
-    public String getUsername() {
-        return this.username;
-    }
-
-    /**
-     * Setter for <code>auth.app_user.username</code>.
-     */
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     /**
@@ -135,6 +125,34 @@ public class AppUser implements Serializable {
         this.createdAt = createdAt;
     }
 
+    /**
+     * Getter for <code>auth.app_user.first_name</code>.
+     */
+    public String getFirstName() {
+        return this.firstName;
+    }
+
+    /**
+     * Setter for <code>auth.app_user.first_name</code>.
+     */
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    /**
+     * Getter for <code>auth.app_user.last_name</code>.
+     */
+    public String getLastName() {
+        return this.lastName;
+    }
+
+    /**
+     * Setter for <code>auth.app_user.last_name</code>.
+     */
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -149,12 +167,6 @@ public class AppUser implements Serializable {
                 return false;
         }
         else if (!this.userId.equals(other.userId))
-            return false;
-        if (this.username == null) {
-            if (other.username != null)
-                return false;
-        }
-        else if (!this.username.equals(other.username))
             return false;
         if (this.email == null) {
             if (other.email != null)
@@ -180,6 +192,18 @@ public class AppUser implements Serializable {
         }
         else if (!this.createdAt.equals(other.createdAt))
             return false;
+        if (this.firstName == null) {
+            if (other.firstName != null)
+                return false;
+        }
+        else if (!this.firstName.equals(other.firstName))
+            return false;
+        if (this.lastName == null) {
+            if (other.lastName != null)
+                return false;
+        }
+        else if (!this.lastName.equals(other.lastName))
+            return false;
         return true;
     }
 
@@ -188,11 +212,12 @@ public class AppUser implements Serializable {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((this.userId == null) ? 0 : this.userId.hashCode());
-        result = prime * result + ((this.username == null) ? 0 : this.username.hashCode());
         result = prime * result + ((this.email == null) ? 0 : this.email.hashCode());
         result = prime * result + ((this.passwordHash == null) ? 0 : this.passwordHash.hashCode());
         result = prime * result + ((this.isActive == null) ? 0 : this.isActive.hashCode());
         result = prime * result + ((this.createdAt == null) ? 0 : this.createdAt.hashCode());
+        result = prime * result + ((this.firstName == null) ? 0 : this.firstName.hashCode());
+        result = prime * result + ((this.lastName == null) ? 0 : this.lastName.hashCode());
         return result;
     }
 
@@ -201,11 +226,12 @@ public class AppUser implements Serializable {
         StringBuilder sb = new StringBuilder("AppUser (");
 
         sb.append(userId);
-        sb.append(", ").append(username);
         sb.append(", ").append(email);
         sb.append(", ").append(passwordHash);
         sb.append(", ").append(isActive);
         sb.append(", ").append(createdAt);
+        sb.append(", ").append(firstName);
+        sb.append(", ").append(lastName);
 
         sb.append(")");
         return sb.toString();

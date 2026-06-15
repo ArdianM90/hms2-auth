@@ -26,5 +26,4 @@ public class Keys {
 
     public static final UniqueKey<AppUserRecord> USER_EMAIL_KEY = Internal.createUniqueKey(AppUser.APP_USER, DSL.name("user_email_key"), new TableField[] { AppUser.APP_USER.EMAIL }, true);
     public static final UniqueKey<AppUserRecord> USER_PKEY = Internal.createUniqueKey(AppUser.APP_USER, DSL.name("user_pkey"), new TableField[] { AppUser.APP_USER.USER_ID }, true);
-    public static final UniqueKey<AppUserRecord> USER_USERNAME_KEY = Internal.createUniqueKey(AppUser.APP_USER, DSL.name("user_username_key"), new TableField[] { AppUser.APP_USER.USERNAME }, true);
 }

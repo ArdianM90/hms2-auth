@@ -60,11 +60,6 @@ public class AppUser extends TableImpl<AppUserRecord> {
     public final TableField<AppUserRecord, UUID> USER_ID = createField(DSL.name("user_id"), SQLDataType.UUID.nullable(false).defaultValue(DSL.field(DSL.raw("gen_random_uuid()"), SQLDataType.UUID)), this, "");
 
     /**
-     * The column <code>auth.app_user.username</code>.
-     */
-    public final TableField<AppUserRecord, String> USERNAME = createField(DSL.name("username"), SQLDataType.CLOB.nullable(false), this, "");
-
-    /**
      * The column <code>auth.app_user.email</code>.
      */
     public final TableField<AppUserRecord, String> EMAIL = createField(DSL.name("email"), SQLDataType.CLOB.nullable(false), this, "");
@@ -83,6 +78,16 @@ public class AppUser extends TableImpl<AppUserRecord> {
      * The column <code>auth.app_user.created_at</code>.
      */
     public final TableField<AppUserRecord, LocalDateTime> CREATED_AT = createField(DSL.name("created_at"), SQLDataType.LOCALDATETIME(6).nullable(false).defaultValue(DSL.field(DSL.raw("now()"), SQLDataType.LOCALDATETIME)), this, "");
+
+    /**
+     * The column <code>auth.app_user.first_name</code>.
+     */
+    public final TableField<AppUserRecord, String> FIRST_NAME = createField(DSL.name("first_name"), SQLDataType.CLOB.nullable(false), this, "");
+
+    /**
+     * The column <code>auth.app_user.last_name</code>.
+     */
+    public final TableField<AppUserRecord, String> LAST_NAME = createField(DSL.name("last_name"), SQLDataType.CLOB.nullable(false), this, "");
 
     private AppUser(Name alias, Table<AppUserRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
@@ -125,7 +130,7 @@ public class AppUser extends TableImpl<AppUserRecord> {
 
     @Override
     public List<UniqueKey<AppUserRecord>> getUniqueKeys() {
-        return Arrays.asList(Keys.USER_EMAIL_KEY, Keys.USER_USERNAME_KEY);
+        return Arrays.asList(Keys.USER_EMAIL_KEY);
     }
 
     @Override

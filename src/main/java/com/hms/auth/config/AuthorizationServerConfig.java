@@ -37,9 +37,9 @@ public class AuthorizationServerConfig {
 
       context.getClaims().claim("client_id", context.getRegisteredClient().getClientId());
 
-      String username = context.getPrincipal().getName();
+      String email = context.getPrincipal().getName();
       AppUserRecord user =
-          dsl.selectFrom(Tables.APP_USER).where(Tables.APP_USER.USERNAME.eq(username)).fetchOne();
+          dsl.selectFrom(Tables.APP_USER).where(Tables.APP_USER.EMAIL.eq(email)).fetchOne();
       if (user != null) {
         context.getClaims().claim("user_id", user.getUserId().toString());
       }

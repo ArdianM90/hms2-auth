@@ -36,73 +36,87 @@ public class AppUserRecord extends UpdatableRecordImpl<AppUserRecord> {
     }
 
     /**
-     * Setter for <code>auth.app_user.username</code>.
-     */
-    public void setUsername(String value) {
-        set(1, value);
-    }
-
-    /**
-     * Getter for <code>auth.app_user.username</code>.
-     */
-    public String getUsername() {
-        return (String) get(1);
-    }
-
-    /**
      * Setter for <code>auth.app_user.email</code>.
      */
     public void setEmail(String value) {
-        set(2, value);
+        set(1, value);
     }
 
     /**
      * Getter for <code>auth.app_user.email</code>.
      */
     public String getEmail() {
-        return (String) get(2);
+        return (String) get(1);
     }
 
     /**
      * Setter for <code>auth.app_user.password_hash</code>.
      */
     public void setPasswordHash(String value) {
-        set(3, value);
+        set(2, value);
     }
 
     /**
      * Getter for <code>auth.app_user.password_hash</code>.
      */
     public String getPasswordHash() {
-        return (String) get(3);
+        return (String) get(2);
     }
 
     /**
      * Setter for <code>auth.app_user.is_active</code>.
      */
     public void setIsActive(Boolean value) {
-        set(4, value);
+        set(3, value);
     }
 
     /**
      * Getter for <code>auth.app_user.is_active</code>.
      */
     public Boolean getIsActive() {
-        return (Boolean) get(4);
+        return (Boolean) get(3);
     }
 
     /**
      * Setter for <code>auth.app_user.created_at</code>.
      */
     public void setCreatedAt(LocalDateTime value) {
-        set(5, value);
+        set(4, value);
     }
 
     /**
      * Getter for <code>auth.app_user.created_at</code>.
      */
     public LocalDateTime getCreatedAt() {
-        return (LocalDateTime) get(5);
+        return (LocalDateTime) get(4);
+    }
+
+    /**
+     * Setter for <code>auth.app_user.first_name</code>.
+     */
+    public void setFirstName(String value) {
+        set(5, value);
+    }
+
+    /**
+     * Getter for <code>auth.app_user.first_name</code>.
+     */
+    public String getFirstName() {
+        return (String) get(5);
+    }
+
+    /**
+     * Setter for <code>auth.app_user.last_name</code>.
+     */
+    public void setLastName(String value) {
+        set(6, value);
+    }
+
+    /**
+     * Getter for <code>auth.app_user.last_name</code>.
+     */
+    public String getLastName() {
+        return (String) get(6);
     }
 
     // -------------------------------------------------------------------------
@@ -128,15 +142,16 @@ public class AppUserRecord extends UpdatableRecordImpl<AppUserRecord> {
     /**
      * Create a detached, initialised AppUserRecord
      */
-    public AppUserRecord(UUID userId, String username, String email, String passwordHash, Boolean isActive, LocalDateTime createdAt) {
+    public AppUserRecord(UUID userId, String email, String passwordHash, Boolean isActive, LocalDateTime createdAt, String firstName, String lastName) {
         super(AppUser.APP_USER);
 
         setUserId(userId);
-        setUsername(username);
         setEmail(email);
         setPasswordHash(passwordHash);
         setIsActive(isActive);
         setCreatedAt(createdAt);
+        setFirstName(firstName);
+        setLastName(lastName);
         resetTouchedOnNotNull();
     }
 
@@ -148,11 +163,12 @@ public class AppUserRecord extends UpdatableRecordImpl<AppUserRecord> {
 
         if (value != null) {
             setUserId(value.getUserId());
-            setUsername(value.getUsername());
             setEmail(value.getEmail());
             setPasswordHash(value.getPasswordHash());
             setIsActive(value.getIsActive());
             setCreatedAt(value.getCreatedAt());
+            setFirstName(value.getFirstName());
+            setLastName(value.getLastName());
             resetTouchedOnNotNull();
         }
     }

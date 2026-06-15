@@ -1,6 +1,6 @@
 package com.hms.auth.service;
 
-import static com.hms.auth.generated.jooq.Tables.APP_USER;
+import static com.hms.generated.jooq.tables.AppUser.APP_USER;
 
 import com.hms.auth.model.RegisterRequest;
 import java.util.UUID;
@@ -22,7 +22,8 @@ public class AuthService {
 
     dsl.insertInto(APP_USER)
         .set(APP_USER.USER_ID, id)
-        .set(APP_USER.USERNAME, request.username())
+        .set(APP_USER.FIRST_NAME, request.firstName())
+        .set(APP_USER.LAST_NAME, request.lastName())
         .set(APP_USER.EMAIL, request.email())
         .set(APP_USER.PASSWORD_HASH, encoder.encode(request.password()))
         .execute();

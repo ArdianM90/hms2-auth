@@ -71,35 +71,6 @@ public class AppUserDao extends DAOImpl<AppUserRecord, com.hms.generated.jooq.ta
     }
 
     /**
-     * Fetch records that have <code>username BETWEEN lowerInclusive AND
-     * upperInclusive</code>
-     */
-    public List<com.hms.generated.jooq.tables.pojos.AppUser> fetchRangeOfUsername(String lowerInclusive, String upperInclusive) {
-        return fetchRange(AppUser.APP_USER.USERNAME, lowerInclusive, upperInclusive);
-    }
-
-    /**
-     * Fetch records that have <code>username IN (values)</code>
-     */
-    public List<com.hms.generated.jooq.tables.pojos.AppUser> fetchByUsername(String... values) {
-        return fetch(AppUser.APP_USER.USERNAME, values);
-    }
-
-    /**
-     * Fetch a unique record that has <code>username = value</code>
-     */
-    public com.hms.generated.jooq.tables.pojos.AppUser fetchOneByUsername(String value) {
-        return fetchOne(AppUser.APP_USER.USERNAME, value);
-    }
-
-    /**
-     * Fetch a unique record that has <code>username = value</code>
-     */
-    public Optional<com.hms.generated.jooq.tables.pojos.AppUser> fetchOptionalByUsername(String value) {
-        return fetchOptional(AppUser.APP_USER.USERNAME, value);
-    }
-
-    /**
      * Fetch records that have <code>email BETWEEN lowerInclusive AND
      * upperInclusive</code>
      */
@@ -171,5 +142,35 @@ public class AppUserDao extends DAOImpl<AppUserRecord, com.hms.generated.jooq.ta
      */
     public List<com.hms.generated.jooq.tables.pojos.AppUser> fetchByCreatedAt(LocalDateTime... values) {
         return fetch(AppUser.APP_USER.CREATED_AT, values);
+    }
+
+    /**
+     * Fetch records that have <code>first_name BETWEEN lowerInclusive AND
+     * upperInclusive</code>
+     */
+    public List<com.hms.generated.jooq.tables.pojos.AppUser> fetchRangeOfFirstName(String lowerInclusive, String upperInclusive) {
+        return fetchRange(AppUser.APP_USER.FIRST_NAME, lowerInclusive, upperInclusive);
+    }
+
+    /**
+     * Fetch records that have <code>first_name IN (values)</code>
+     */
+    public List<com.hms.generated.jooq.tables.pojos.AppUser> fetchByFirstName(String... values) {
+        return fetch(AppUser.APP_USER.FIRST_NAME, values);
+    }
+
+    /**
+     * Fetch records that have <code>last_name BETWEEN lowerInclusive AND
+     * upperInclusive</code>
+     */
+    public List<com.hms.generated.jooq.tables.pojos.AppUser> fetchRangeOfLastName(String lowerInclusive, String upperInclusive) {
+        return fetchRange(AppUser.APP_USER.LAST_NAME, lowerInclusive, upperInclusive);
+    }
+
+    /**
+     * Fetch records that have <code>last_name IN (values)</code>
+     */
+    public List<com.hms.generated.jooq.tables.pojos.AppUser> fetchByLastName(String... values) {
+        return fetch(AppUser.APP_USER.LAST_NAME, values);
     }
 }

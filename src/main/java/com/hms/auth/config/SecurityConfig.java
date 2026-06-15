@@ -1,8 +1,8 @@
 package com.hms.auth.config;
 
-import static com.hms.auth.generated.jooq.Tables.APP_USER;
+import static com.hms.generated.jooq.Tables.APP_USER;
 
-import com.hms.auth.generated.jooq.tables.records.AppUserRecord;
+import com.hms.generated.jooq.tables.records.AppUserRecord;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -94,14 +94,13 @@ public class SecurityConfig {
 
   @Bean
   public UserDetailsService userDetailsService(DSLContext dsl) {
-    return username -> {
-      AppUserRecord user =
-          dsl.selectFrom(APP_USER).where(APP_USER.USERNAME.eq(username)).fetchOne();
+    return email -> {
+      AppUserRecord user = dsl.selectFrom(APP_USER).where(APP_USER.EMAIL.eq(email)).fetchOne();
       if (user == null) {
-        throw new UsernameNotFoundException(username);
+        throw new UsernameNotFoundException(email);
       }
 
-      return User.withUsername(user.getUsername())
+      return User.withUsername(user.getEmail())
           .password(user.getPasswordHash())
           .roles("USER")
           .build();
