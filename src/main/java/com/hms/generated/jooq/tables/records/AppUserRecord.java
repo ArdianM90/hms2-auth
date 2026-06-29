@@ -119,6 +119,20 @@ public class AppUserRecord extends UpdatableRecordImpl<AppUserRecord> {
         return (String) get(6);
     }
 
+    /**
+     * Setter for <code>auth.app_user.role_code</code>.
+     */
+    public void setRoleCode(String value) {
+        set(7, value);
+    }
+
+    /**
+     * Getter for <code>auth.app_user.role_code</code>.
+     */
+    public String getRoleCode() {
+        return (String) get(7);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -142,7 +156,7 @@ public class AppUserRecord extends UpdatableRecordImpl<AppUserRecord> {
     /**
      * Create a detached, initialised AppUserRecord
      */
-    public AppUserRecord(UUID userId, String email, String passwordHash, Boolean isActive, LocalDateTime createdAt, String firstName, String lastName) {
+    public AppUserRecord(UUID userId, String email, String passwordHash, Boolean isActive, LocalDateTime createdAt, String firstName, String lastName, String roleCode) {
         super(AppUser.APP_USER);
 
         setUserId(userId);
@@ -152,6 +166,7 @@ public class AppUserRecord extends UpdatableRecordImpl<AppUserRecord> {
         setCreatedAt(createdAt);
         setFirstName(firstName);
         setLastName(lastName);
+        setRoleCode(roleCode);
         resetTouchedOnNotNull();
     }
 
@@ -169,6 +184,7 @@ public class AppUserRecord extends UpdatableRecordImpl<AppUserRecord> {
             setCreatedAt(value.getCreatedAt());
             setFirstName(value.getFirstName());
             setLastName(value.getLastName());
+            setRoleCode(value.getRoleCode());
             resetTouchedOnNotNull();
         }
     }

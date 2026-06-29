@@ -5,12 +5,16 @@ package com.hms.generated.jooq;
 
 
 import com.hms.generated.jooq.tables.AppUser;
+import com.hms.generated.jooq.tables.TypeAppUserRole;
 import com.hms.generated.jooq.tables.records.AppUserRecord;
+import com.hms.generated.jooq.tables.records.TypeAppUserRoleRecord;
 
+import org.jooq.ForeignKey;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
 import org.jooq.impl.Internal;
+import org.jooq.impl.QOM.ForeignKeyRule;
 
 
 /**
@@ -26,4 +30,11 @@ public class Keys {
 
     public static final UniqueKey<AppUserRecord> USER_EMAIL_KEY = Internal.createUniqueKey(AppUser.APP_USER, DSL.name("user_email_key"), new TableField[] { AppUser.APP_USER.EMAIL }, true);
     public static final UniqueKey<AppUserRecord> USER_PKEY = Internal.createUniqueKey(AppUser.APP_USER, DSL.name("user_pkey"), new TableField[] { AppUser.APP_USER.USER_ID }, true);
+    public static final UniqueKey<TypeAppUserRoleRecord> TYPE_APP_USER_ROLE_PKEY = Internal.createUniqueKey(TypeAppUserRole.TYPE_APP_USER_ROLE, DSL.name("type_app_user_role_pkey"), new TableField[] { TypeAppUserRole.TYPE_APP_USER_ROLE.CODE }, true);
+
+    // -------------------------------------------------------------------------
+    // FOREIGN KEY definitions
+    // -------------------------------------------------------------------------
+
+    public static final ForeignKey<AppUserRecord, TypeAppUserRoleRecord> APP_USER__FK_APP_USER_ROLE = Internal.createForeignKey(AppUser.APP_USER, DSL.name("fk_app_user_role"), new TableField[] { AppUser.APP_USER.ROLE_CODE }, Keys.TYPE_APP_USER_ROLE_PKEY, new TableField[] { TypeAppUserRole.TYPE_APP_USER_ROLE.CODE }, true, ForeignKeyRule.NO_ACTION, ForeignKeyRule.NO_ACTION);
 }

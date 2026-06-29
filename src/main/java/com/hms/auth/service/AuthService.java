@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthService {
 
+  private static final String INITIAL_PASSWORD = "Test1234";
+
   private final DSLContext dsl;
   private final PasswordEncoder encoder;
 
@@ -22,10 +24,12 @@ public class AuthService {
 
     dsl.insertInto(APP_USER)
         .set(APP_USER.USER_ID, id)
+        .set(APP_USER.PASSWORD_HASH, encoder.encode(INITIAL_PASSWORD))
         .set(APP_USER.FIRST_NAME, request.firstName())
         .set(APP_USER.LAST_NAME, request.lastName())
         .set(APP_USER.EMAIL, request.email())
-        .set(APP_USER.PASSWORD_HASH, encoder.encode(request.password()))
+        .set(APP_USER.ROLE_CODE, request.roleCode()
+        )
         .execute();
     return id;
   }

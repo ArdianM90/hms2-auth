@@ -24,6 +24,7 @@ public class AppUser implements Serializable {
     private LocalDateTime createdAt;
     private String firstName;
     private String lastName;
+    private String roleCode;
 
     public AppUser() {}
 
@@ -35,6 +36,7 @@ public class AppUser implements Serializable {
         this.createdAt = value.createdAt;
         this.firstName = value.firstName;
         this.lastName = value.lastName;
+        this.roleCode = value.roleCode;
     }
 
     public AppUser(
@@ -44,7 +46,8 @@ public class AppUser implements Serializable {
         Boolean isActive,
         LocalDateTime createdAt,
         String firstName,
-        String lastName
+        String lastName,
+        String roleCode
     ) {
         this.userId = userId;
         this.email = email;
@@ -53,6 +56,7 @@ public class AppUser implements Serializable {
         this.createdAt = createdAt;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.roleCode = roleCode;
     }
 
     /**
@@ -153,6 +157,20 @@ public class AppUser implements Serializable {
         this.lastName = lastName;
     }
 
+    /**
+     * Getter for <code>auth.app_user.role_code</code>.
+     */
+    public String getRoleCode() {
+        return this.roleCode;
+    }
+
+    /**
+     * Setter for <code>auth.app_user.role_code</code>.
+     */
+    public void setRoleCode(String roleCode) {
+        this.roleCode = roleCode;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -204,6 +222,12 @@ public class AppUser implements Serializable {
         }
         else if (!this.lastName.equals(other.lastName))
             return false;
+        if (this.roleCode == null) {
+            if (other.roleCode != null)
+                return false;
+        }
+        else if (!this.roleCode.equals(other.roleCode))
+            return false;
         return true;
     }
 
@@ -218,6 +242,7 @@ public class AppUser implements Serializable {
         result = prime * result + ((this.createdAt == null) ? 0 : this.createdAt.hashCode());
         result = prime * result + ((this.firstName == null) ? 0 : this.firstName.hashCode());
         result = prime * result + ((this.lastName == null) ? 0 : this.lastName.hashCode());
+        result = prime * result + ((this.roleCode == null) ? 0 : this.roleCode.hashCode());
         return result;
     }
 
@@ -232,6 +257,7 @@ public class AppUser implements Serializable {
         sb.append(", ").append(createdAt);
         sb.append(", ").append(firstName);
         sb.append(", ").append(lastName);
+        sb.append(", ").append(roleCode);
 
         sb.append(")");
         return sb.toString();

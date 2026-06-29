@@ -6,6 +6,7 @@ package com.hms.generated.jooq.tables;
 
 import com.hms.generated.jooq.Auth;
 import com.hms.generated.jooq.Keys;
+import com.hms.generated.jooq.tables.TypeAppUserRole.TypeAppUserRolePath;
 import com.hms.generated.jooq.tables.records.AppUserRecord;
 
 import java.time.LocalDateTime;
@@ -16,9 +17,13 @@ import java.util.UUID;
 
 import org.jooq.Condition;
 import org.jooq.Field;
+import org.jooq.ForeignKey;
+import org.jooq.InverseForeignKey;
 import org.jooq.Name;
+import org.jooq.Path;
 import org.jooq.PlainSQL;
 import org.jooq.QueryPart;
+import org.jooq.Record;
 import org.jooq.SQL;
 import org.jooq.Schema;
 import org.jooq.Stringly;
@@ -89,6 +94,11 @@ public class AppUser extends TableImpl<AppUserRecord> {
      */
     public final TableField<AppUserRecord, String> LAST_NAME = createField(DSL.name("last_name"), SQLDataType.CLOB.nullable(false), this, "");
 
+    /**
+     * The column <code>auth.app_user.role_code</code>.
+     */
+    public final TableField<AppUserRecord, String> ROLE_CODE = createField(DSL.name("role_code"), SQLDataType.CLOB.nullable(false).defaultValue(DSL.field(DSL.raw("'guest'::text"), SQLDataType.CLOB)), this, "");
+
     private AppUser(Name alias, Table<AppUserRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
     }
@@ -118,6 +128,39 @@ public class AppUser extends TableImpl<AppUserRecord> {
         this(DSL.name("app_user"), null);
     }
 
+    public <O extends Record> AppUser(Table<O> path, ForeignKey<O, AppUserRecord> childPath, InverseForeignKey<O, AppUserRecord> parentPath) {
+        super(path, childPath, parentPath, APP_USER);
+    }
+
+    /**
+     * A subtype implementing {@link Path} for simplified path-based joins.
+     */
+    public static class AppUserPath extends AppUser implements Path<AppUserRecord> {
+
+        private static final long serialVersionUID = 1L;
+        public <O extends Record> AppUserPath(Table<O> path, ForeignKey<O, AppUserRecord> childPath, InverseForeignKey<O, AppUserRecord> parentPath) {
+            super(path, childPath, parentPath);
+        }
+        private AppUserPath(Name alias, Table<AppUserRecord> aliased) {
+            super(alias, aliased);
+        }
+
+        @Override
+        public AppUserPath as(String alias) {
+            return new AppUserPath(DSL.name(alias), this);
+        }
+
+        @Override
+        public AppUserPath as(Name alias) {
+            return new AppUserPath(alias, this);
+        }
+
+        @Override
+        public AppUserPath as(Table<?> alias) {
+            return new AppUserPath(alias.getQualifiedName(), this);
+        }
+    }
+
     @Override
     public Schema getSchema() {
         return aliased() ? null : Auth.AUTH;
@@ -131,6 +174,24 @@ public class AppUser extends TableImpl<AppUserRecord> {
     @Override
     public List<UniqueKey<AppUserRecord>> getUniqueKeys() {
         return Arrays.asList(Keys.USER_EMAIL_KEY);
+    }
+
+    @Override
+    public List<ForeignKey<AppUserRecord, ?>> getReferences() {
+        return Arrays.asList(Keys.APP_USER__FK_APP_USER_ROLE);
+    }
+
+    private transient TypeAppUserRolePath _typeAppUserRole;
+
+    /**
+     * Get the implicit join path to the <code>auth.type_app_user_role</code>
+     * table.
+     */
+    public TypeAppUserRolePath typeAppUserRole() {
+        if (_typeAppUserRole == null)
+            _typeAppUserRole = new TypeAppUserRolePath(this, Keys.APP_USER__FK_APP_USER_ROLE, null);
+
+        return _typeAppUserRole;
     }
 
     @Override

@@ -173,4 +173,19 @@ public class AppUserDao extends DAOImpl<AppUserRecord, com.hms.generated.jooq.ta
     public List<com.hms.generated.jooq.tables.pojos.AppUser> fetchByLastName(String... values) {
         return fetch(AppUser.APP_USER.LAST_NAME, values);
     }
+
+    /**
+     * Fetch records that have <code>role_code BETWEEN lowerInclusive AND
+     * upperInclusive</code>
+     */
+    public List<com.hms.generated.jooq.tables.pojos.AppUser> fetchRangeOfRoleCode(String lowerInclusive, String upperInclusive) {
+        return fetchRange(AppUser.APP_USER.ROLE_CODE, lowerInclusive, upperInclusive);
+    }
+
+    /**
+     * Fetch records that have <code>role_code IN (values)</code>
+     */
+    public List<com.hms.generated.jooq.tables.pojos.AppUser> fetchByRoleCode(String... values) {
+        return fetch(AppUser.APP_USER.ROLE_CODE, values);
+    }
 }

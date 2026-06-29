@@ -5,6 +5,7 @@ package com.hms.generated.jooq;
 
 
 import com.hms.generated.jooq.tables.AppUser;
+import com.hms.generated.jooq.tables.TypeAppUserRole;
 
 
 /**
@@ -17,4 +18,9 @@ public class Tables {
      * The table <code>auth.app_user</code>.
      */
     public static final AppUser APP_USER = AppUser.APP_USER;
+
+    /**
+     * The table <code>auth.type_app_user_role</code>.
+     */
+    public static final TypeAppUserRole TYPE_APP_USER_ROLE = TypeAppUserRole.TYPE_APP_USER_ROLE;
 }
