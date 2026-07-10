@@ -1,13 +1,9 @@
 package com.hms.auth.config;
 
-import static com.hms.generated.jooq.Tables.APP_USER;
-
-import com.hms.generated.jooq.tables.records.AppUserRecord;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
-import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,9 +13,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.authorization.OAuth2AuthorizationServerConfigurer;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -92,29 +85,10 @@ public class SecurityConfig {
     return http.build();
   }
 
-  @Bean
-  public UserDetailsService userDetailsService(DSLContext dsl) {
-    return email -> {
-      AppUserRecord user = dsl.selectFrom(APP_USER).where(APP_USER.EMAIL.eq(email)).fetchOne();
-      if (user == null) {
-        throw new UsernameNotFoundException(email);
-      }
-
-      return User.withUsername(user.getEmail())
-          .password(user.getPasswordHash())
-          .roles("USER")
-          .build();
-    };
-  }
-
   private void handleLoginSuccess(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
     HttpSessionRequestCache requestCache = new HttpSessionRequestCache();
     SavedRequest savedRequest = requestCache.getRequest(request, response);
-
-    // todo: zamiana na logger.debug()
-    System.out.println(
-        ">>> savedRequest: " + (savedRequest != null ? savedRequest.getRedirectUrl() : "NULL"));
 
     if (savedRequest != null) {
       response.sendRedirect(savedRequest.getRedirectUrl());

@@ -1,7 +1,7 @@
 package com.hms.auth.config;
 
-import com.hms.generated.jooq.Tables;
-import com.hms.generated.jooq.tables.records.AppUserRecord;
+import com.hms.auth.model.AppUserDto;
+import com.hms.auth.service.AppUserService;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
@@ -11,8 +11,9 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.util.List;
 import java.util.UUID;
-import org.jooq.DSLContext;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -26,23 +27,23 @@ import org.springframework.security.oauth2.server.authorization.token.JwtEncodin
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 
 @Configuration
+@RequiredArgsConstructor
 public class AuthorizationServerConfig {
 
+  private final AppUserService appUserService;
+
   @Bean
-  public OAuth2TokenCustomizer<JwtEncodingContext> tokenCustomizer(DSLContext dsl) {
+  public OAuth2TokenCustomizer<JwtEncodingContext> tokenCustomizer() {
     return context -> {
       if (!context.getTokenType().equals(OAuth2TokenType.ACCESS_TOKEN)) {
         return;
       }
 
-      context.getClaims().claim("client_id", context.getRegisteredClient().getClientId());
-
       String email = context.getPrincipal().getName();
-      AppUserRecord user =
-          dsl.selectFrom(Tables.APP_USER).where(Tables.APP_USER.EMAIL.eq(email)).fetchOne();
-      if (user != null) {
-        context.getClaims().claim("user_id", user.getUserId().toString());
-      }
+      AppUserDto appUserDto = appUserService.findByEmail(email);
+      context.getClaims().claim("client_id", context.getRegisteredClient().getClientId());
+      context.getClaims().claim("user_id", appUserDto.id().toString());
+      context.getClaims().claim("roles", List.of("ROLE_" + appUserDto.roleCode().toUpperCase()));
     };
   }
 
