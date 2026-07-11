@@ -14,6 +14,7 @@ import java.security.interfaces.RSAPublicKey;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -31,6 +32,9 @@ import org.springframework.security.oauth2.server.authorization.token.OAuth2Toke
 public class AuthorizationServerConfig {
 
   private final AppUserService appUserService;
+
+  @Value("${app.auth-issuer}")
+  private String issuer;
 
   @Bean
   public OAuth2TokenCustomizer<JwtEncodingContext> tokenCustomizer() {
@@ -78,7 +82,7 @@ public class AuthorizationServerConfig {
 
   @Bean
   public AuthorizationServerSettings authorizationServerSettings() {
-    return AuthorizationServerSettings.builder().build();
+    return AuthorizationServerSettings.builder().issuer(issuer).build();
   }
 
   private static KeyPair generateRsaKey() {
