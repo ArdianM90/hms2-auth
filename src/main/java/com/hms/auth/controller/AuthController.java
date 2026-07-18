@@ -12,17 +12,17 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AuthController {
 
-  private final AuthService service;
+  private final AuthService authService;
 
   @PostMapping("/register")
   public ResponseEntity<UUID> register(@RequestBody RegisterRequest request) {
 
-    return ResponseEntity.ok(service.register(request));
+    return ResponseEntity.ok(authService.register(request));
   }
 
   @PutMapping("/{user-id}/inactivate")
   public ResponseEntity<Void> inactivate(@PathVariable("user-id") UUID userId) {
-    service.inactivate(userId);
+    authService.inactivate(userId);
     return ResponseEntity.ok().build();
   }
 }

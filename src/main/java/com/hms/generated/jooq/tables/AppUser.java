@@ -72,7 +72,7 @@ public class AppUser extends TableImpl<AppUserRecord> {
     /**
      * The column <code>auth.app_user.password_hash</code>.
      */
-    public final TableField<AppUserRecord, String> PASSWORD_HASH = createField(DSL.name("password_hash"), SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<AppUserRecord, String> PASSWORD_HASH = createField(DSL.name("password_hash"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>auth.app_user.is_active</code>.
