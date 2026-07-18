@@ -72,7 +72,7 @@ public class AppUser extends TableImpl<AppUserRecord> {
     /**
      * The column <code>auth.app_user.password_hash</code>.
      */
-    public final TableField<AppUserRecord, String> PASSWORD_HASH = createField(DSL.name("password_hash"), SQLDataType.CLOB, this, "");
+    public final TableField<AppUserRecord, String> PASSWORD_HASH = createField(DSL.name("password_hash"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>auth.app_user.is_active</code>.
@@ -98,6 +98,11 @@ public class AppUser extends TableImpl<AppUserRecord> {
      * The column <code>auth.app_user.role_code</code>.
      */
     public final TableField<AppUserRecord, String> ROLE_CODE = createField(DSL.name("role_code"), SQLDataType.CLOB.nullable(false).defaultValue(DSL.field(DSL.raw("'guest'::text"), SQLDataType.CLOB)), this, "");
+
+    /**
+     * The column <code>auth.app_user.is_initial_password</code>.
+     */
+    public final TableField<AppUserRecord, Boolean> IS_INITIAL_PASSWORD = createField(DSL.name("is_initial_password"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field(DSL.raw("true"), SQLDataType.BOOLEAN)), this, "");
 
     private AppUser(Name alias, Table<AppUserRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);

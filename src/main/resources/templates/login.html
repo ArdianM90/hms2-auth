@@ -182,13 +182,26 @@
         event.preventDefault();
 
         const email = document.getElementById("username").value;
-        const response = await fetch(
-            `/check-password?email=${encodeURIComponent(email)}`,
-            { credentials: "same-origin" }
-        );
+        const password = document.querySelector(
+            'input[name="password"]'
+        ).value;
+        const response = await fetch("/check-first-login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": document.querySelector(
+                    'input[name="_csrf"]'
+                ).value
+            },
+            credentials: "same-origin",
+            body: JSON.stringify({
+                email: email,
+                password: password
+            })
+        });
 
         const result = await response.json();
-        if (result.redirectToSetPassword) {
+        if (result.isInitialPassword) {
             window.location.href = "/set-password";
             return;
         }

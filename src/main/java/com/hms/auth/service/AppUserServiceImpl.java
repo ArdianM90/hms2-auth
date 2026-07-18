@@ -16,7 +16,11 @@ public class AppUserServiceImpl implements AppUserService {
   @Override
   public AppUserDto findByEmail(String email) {
     return dsl.select(
-            APP_USER.USER_ID.as("id"), APP_USER.EMAIL, APP_USER.PASSWORD_HASH, APP_USER.ROLE_CODE)
+            APP_USER.USER_ID.as("id"),
+            APP_USER.EMAIL,
+            APP_USER.PASSWORD_HASH,
+            APP_USER.ROLE_CODE,
+            APP_USER.IS_INITIAL_PASSWORD)
         .from(APP_USER)
         .where(APP_USER.EMAIL.eq(email))
         .fetchOneInto(AppUserDto.class);

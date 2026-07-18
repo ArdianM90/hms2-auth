@@ -133,6 +133,20 @@ public class AppUserRecord extends UpdatableRecordImpl<AppUserRecord> {
         return (String) get(7);
     }
 
+    /**
+     * Setter for <code>auth.app_user.is_initial_password</code>.
+     */
+    public void setIsInitialPassword(Boolean value) {
+        set(8, value);
+    }
+
+    /**
+     * Getter for <code>auth.app_user.is_initial_password</code>.
+     */
+    public Boolean getIsInitialPassword() {
+        return (Boolean) get(8);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -156,7 +170,7 @@ public class AppUserRecord extends UpdatableRecordImpl<AppUserRecord> {
     /**
      * Create a detached, initialised AppUserRecord
      */
-    public AppUserRecord(UUID userId, String email, String passwordHash, Boolean isActive, LocalDateTime createdAt, String firstName, String lastName, String roleCode) {
+    public AppUserRecord(UUID userId, String email, String passwordHash, Boolean isActive, LocalDateTime createdAt, String firstName, String lastName, String roleCode, Boolean isInitialPassword) {
         super(AppUser.APP_USER);
 
         setUserId(userId);
@@ -167,6 +181,7 @@ public class AppUserRecord extends UpdatableRecordImpl<AppUserRecord> {
         setFirstName(firstName);
         setLastName(lastName);
         setRoleCode(roleCode);
+        setIsInitialPassword(isInitialPassword);
         resetTouchedOnNotNull();
     }
 
@@ -185,6 +200,7 @@ public class AppUserRecord extends UpdatableRecordImpl<AppUserRecord> {
             setFirstName(value.getFirstName());
             setLastName(value.getLastName());
             setRoleCode(value.getRoleCode());
+            setIsInitialPassword(value.getIsInitialPassword());
             resetTouchedOnNotNull();
         }
     }

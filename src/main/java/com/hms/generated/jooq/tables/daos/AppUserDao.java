@@ -188,4 +188,19 @@ public class AppUserDao extends DAOImpl<AppUserRecord, com.hms.generated.jooq.ta
     public List<com.hms.generated.jooq.tables.pojos.AppUser> fetchByRoleCode(String... values) {
         return fetch(AppUser.APP_USER.ROLE_CODE, values);
     }
+
+    /**
+     * Fetch records that have <code>is_initial_password BETWEEN lowerInclusive
+     * AND upperInclusive</code>
+     */
+    public List<com.hms.generated.jooq.tables.pojos.AppUser> fetchRangeOfIsInitialPassword(Boolean lowerInclusive, Boolean upperInclusive) {
+        return fetchRange(AppUser.APP_USER.IS_INITIAL_PASSWORD, lowerInclusive, upperInclusive);
+    }
+
+    /**
+     * Fetch records that have <code>is_initial_password IN (values)</code>
+     */
+    public List<com.hms.generated.jooq.tables.pojos.AppUser> fetchByIsInitialPassword(Boolean... values) {
+        return fetch(AppUser.APP_USER.IS_INITIAL_PASSWORD, values);
+    }
 }
