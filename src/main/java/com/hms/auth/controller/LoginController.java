@@ -53,6 +53,7 @@ public class LoginController {
     if (!passwordEncoder.matches(request.password(), user.passwordHash())) {
       return ResponseEntity.ok(new IsInitialPasswordResponse(false));
     }
+    session.setMaxInactiveInterval(300);
     session.setAttribute("pendingPasswordEmail", request.email());
     return ResponseEntity.ok(new IsInitialPasswordResponse(true));
   }
